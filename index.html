@@ -31,14 +31,17 @@
 
           push();
           translate(b.x, b.y, 0);
-          normalMaterial();
+          ambientMaterial(b.color);
           sphere(ballRadius);
           pop();
         }
       }
 
       function mousePressed() {
-        addBall(0, 0); // add a new ball at the center with random speed
+        if (balls.length > 0) {
+          const b = random(balls);
+          b.color = color(random(255), random(255), random(255));
+        }
       }
 
       function addBall(x, y) {
@@ -46,7 +49,8 @@
           x: x,
           y: y,
           vx: random([-5, -4, -3, 3, 4, 5]),
-          vy: random([-5, -4, -3, 3, 4, 5])
+          vy: random([-5, -4, -3, 3, 4, 5]),
+          color: color(random(255), random(255), random(255))
         });
       }
     </script>
