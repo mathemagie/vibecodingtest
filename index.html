@@ -1,98 +1,54 @@
-
-## 1. Answer to Your Question
-
-You want the ball (sphere) to "bounce" inside the canvas (the "cadre") when you click the mouse, instead of following the mouse. This means:
-- The ball will move on its own, bouncing off the edges of the canvas.
-- When you click the mouse, the ball will start moving (or maybe change direction).
-
-Let's implement this step by step:
-- We'll use variables to store the ball's position and speed.
-- On each frame, we'll update the ball's position.
-- If the ball hits the edge, it will "bounce" (reverse direction).
-- When you click the mouse, the ball will start moving (or change direction).
-
----
-
-## 2. Code Review and Feedback
-
-Below is the updated code for your `index.html`. I've added comments to explain each part.
-
-```html
 <!DOCTYPE html>
 <html>
   <head>
-    <title>P5.js Bouncing Ball</title>
+    <title>P5.js Duplicate Balls</title>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
-  <script type="text/javascript">(function(){var s=document.createElement("script");var port=(window.location.port || (window.location.protocol == 'https:' ? 443: 80));s.src="//"+window.location.hostname+":"+port+ "/livereload.js?port=" + port;document.head.appendChild(s);})();</script></head>
+  </head>
   <body>
     <script>
-      // Ball position and speed variables
-      let ballX, ballY;      // Ball's position
-      let speedX = 0;        // Ball's speed in X direction
-      let speedY = 0;        // Ball's speed in Y direction
-      let ballRadius = 50;   // Ball's radius
+      const ballRadius = 50;
+      const balls = [];
 
       function setup() {
         createCanvas(600, 400, WEBGL);
-        // Start the ball in the center
-        ballX = 0;
-        ballY = 0;
+        addBall(0, 0); // start with one ball
       }
 
       function draw() {
         background(220);
+        for (const b of balls) {
+          b.x += b.vx;
+          b.y += b.vy;
 
-        // Update ball position
-        ballX += speedX;
-        ballY += speedY;
+          if (b.x + ballRadius > width / 2 || b.x - ballRadius < -width / 2) {
+            b.vx = -b.vx;
+            b.x = constrain(b.x, -width / 2 + ballRadius, width / 2 - ballRadius);
+          }
+          if (b.y + ballRadius > height / 2 || b.y - ballRadius < -height / 2) {
+            b.vy = -b.vy;
+            b.y = constrain(b.y, -height / 2 + ballRadius, height / 2 - ballRadius);
+          }
 
-        // Check for collision with the edges and bounce
-        // The edges are at: left = -width/2, right = width/2, top = -height/2, bottom = height/2
-        if (ballX + ballRadius > width/2 || ballX - ballRadius < -width/2) {
-          speedX = -speedX; // Reverse X direction
-          ballX = constrain(ballX, -width/2 + ballRadius, width/2 - ballRadius);
+          push();
+          translate(b.x, b.y, 0);
+          normalMaterial();
+          sphere(ballRadius);
+          pop();
         }
-        if (ballY + ballRadius > height/2 || ballY - ballRadius < -height/2) {
-          speedY = -speedY; // Reverse Y direction
-          ballY = constrain(ballY, -height/2 + ballRadius, height/2 - ballRadius);
-        }
-
-        // Draw the ball
-        push();
-        translate(ballX, ballY, 0);
-        normalMaterial();
-        sphere(ballRadius);
-        pop();
       }
 
-      // When the mouse is pressed, give the ball a random speed
       function mousePressed() {
-        // Random speed between -5 and 5, but not zero
-        speedX = random([-5, -4, -3, 3, 4, 5]);
-        speedY = random([-5, -4, -3, 3, 4, 5]);
+        addBall(0, 0); // add a new ball at the center with random speed
+      }
+
+      function addBall(x, y) {
+        balls.push({
+          x: x,
+          y: y,
+          vx: random([-5, -4, -3, 3, 4, 5]),
+          vy: random([-5, -4, -3, 3, 4, 5])
+        });
       }
     </script>
   </body>
 </html>
-```
-
-### Explanation
-
-- We use variables to keep track of the ball's position (`ballX`, `ballY`) and speed (`speedX`, `speedY`).
-- The `draw()` function updates the ball's position and checks if it hits the edge. If it does, it reverses direction (bounces).
-- The `mousePressed()` function sets the ball's speed to a random value, making it start moving when you click.
-
----
-
-## 3. Suggestions for Further Learning or Practice
-
-- Try changing the ball's speed or size.
-- Add a feature to stop the ball when you click again.
-- Add color or sound effects when the ball bounces.
-- Try making the ball bounce at an angle based on where you click.
-- Explore the [P5.js reference](https://p5js.org/reference/) for more ideas.
-
----
-
-**Encouragement:**  
-Great job exploring animation and interactivity! If you want to add more features or have questions about how the code works, just ask. Would you like to try adding more balls, or maybe make the ball speed up each time it bounces?
