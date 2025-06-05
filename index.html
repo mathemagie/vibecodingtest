@@ -18,10 +18,19 @@
     <script>
       const ballRadius = 50;
       const balls = [];
+      let spawnButton;
 
       function setup() {
         createCanvas(600, 400, WEBGL);
         addBall(0, 0); // start with one ball
+        spawnButton = createButton('Add Ball');
+        spawnButton.position(20, 20);
+        spawnButton.style('z-index', '1');
+        spawnButton.mousePressed(() => {
+          const x = random(-width / 2 + ballRadius, width / 2 - ballRadius);
+          const y = random(-height / 2 + ballRadius, height / 2 - ballRadius);
+          addBall(x, y);
+        });
       }
 
       function draw() {
